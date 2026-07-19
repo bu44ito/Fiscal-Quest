@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FiscalQuest — Learn Money, Level Up</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f6f5f0;--surface:#fff;--surface2:#f0efe9;--surface3:#e8e7e0;
+  --border:#e2e1da;--border2:#cccbc3;
+  --text:#18180f;--text2:#5e5e56;--text3:#9b9b92;
+  --green:#1a7a52;--green-light:#e5f4ed;--green-mid:#22a86e;--green-dark:#0f5238;
+  --amber:#b8720f;--amber-light:#fdf2e2;
+  --red:#c03535;--red-light:#fdeaea;
+  --blue:#2558c4;--blue-light:#eaf0fd;
+  --purple:#5245cc;--purple-light:#eeedfd;
+  --mono:'DM Mono',monospace;--serif:'Instrument Serif',serif;--sans:'DM Sans',sans-serif;
+  --r:14px;--r2:10px;--r3:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;overflow-x:hidden}
+
+/* ─── NAV ─── */
+nav{position:sticky;top:0;z-index:200;background:rgba(246,245,240,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:54px;display:flex;align-items:center;padding:0 1.5rem;gap:1rem}
+.nav-logo{font-family:var(--mono);font-size:15px;font-weight:500;letter-spacing:-.03em;margin-right:auto}
+.nav-logo span{color:var(--green-mid)}
+.nav-tabs{display:flex;gap:2px}
+.nav-tab{background:none;border:none;padding:6px 14px;border-radius:var(--r2);font-family:var(--sans);font-size:13px;color:var(--text2);cursor:pointer;transition:all .15s;font-weight:400}
+.nav-tab:hover{background:var(--surface2);color:var(--text)}
+.nav-tab.active{background:var(--surface2);color:var(--text);font-weight:500}
+.nav-xp{font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:99px;padding:4px 12px;white-space:nowrap}
+.nav-xp strong{color:var(--green-mid)}
+.nav-av{width:32px;height:32px;border-radius:50%;background:var(--green-light);border:1.5px solid #a8dbbf;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--green);cursor:pointer;flex-shrink:0}
+@media(max-width:600px){.nav-tabs{display:none}}
+
+/* ─── SCREENS ─── */
+.screen{display:none}.screen.active{display:block}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+
+/* ─── HERO ─── */
+.hero{padding:2.5rem 0 2rem;border-bottom:1px solid var(--border);margin-bottom:2rem}
+.hero-eyebrow{font-family:var(--mono);font-size:11px;color:var(--green-mid);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+.hero h1{font-family:var(--serif);font-size:clamp(30px,5vw,48px);font-weight:400;letter-spacing:-.02em;line-height:1.1;margin-bottom:.75rem}
+.hero h1 em{font-style:italic;color:var(--green-mid)}
+.hero p{color:var(--text2);max-width:460px;font-size:14px}
+
+/* ─── PLAYER CARD ─── */
+.player-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);padding:1.25rem 1.5rem;margin-bottom:2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
+.p-av{width:50px;height:50px;border-radius:50%;background:var(--green-light);border:2px solid #a8dbbf;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;color:var(--green);flex-shrink:0}
+.p-info{flex:1;min-width:130px}
+.p-name{font-weight:600;font-size:15px}
+.p-lvl{font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.xp-sec{flex:2;min-width:180px}
+.xp-top{display:flex;justify-content:space-between;margin-bottom:5px}
+.xp-top span{font-family:var(--mono);font-size:10px;color:var(--text3)}
+.xp-top strong{font-family:var(--mono);font-size:10px;color:var(--green-mid)}
+.xp-track{height:5px;background:var(--surface2);border-radius:99px;overflow:hidden}
+.xp-fill{height:100%;background:var(--green-mid);border-radius:99px;transition:width .8s cubic-bezier(.16,1,.3,1)}
+.p-stats{display:flex;gap:1.25rem}
+.p-stat-val{font-family:var(--mono);font-size:19px;font-weight:500}
+.p-stat-lbl{font-size:10px;color:var(--text3);margin-top:1px}
+
+/* ─── SECTION LABEL ─── */
+.sec-label{font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.85rem;margin-top:2rem}
+
+/* ─── DAILY CHALLENGE BANNER ─── */
+.daily-banner{background:var(--text);color:#fff;border-radius:var(--r3);padding:1.1rem 1.5rem;margin-bottom:.75rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:opacity .15s}
+.daily-banner:hover{opacity:.9}
+.daily-flame{font-size:22px;flex-shrink:0}
+.daily-text{flex:1}
+.daily-title{font-weight:600;font-size:14px}
+.daily-sub{font-size:12px;opacity:.6;margin-top:1px}
+.daily-pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:5px 14px;font-family:var(--mono);font-size:11px;white-space:nowrap}
+
+/* ─── MODULE GRID ─── */
+.module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-bottom:.5rem}
+.module{background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);padding:1.2rem;cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s;position:relative;overflow:hidden}
+.module:hover:not(.locked){transform:translateY(-2px);border-color:var(--border2);box-shadow:0 6px 20px rgba(0,0,0,.07)}
+.module.mod-active{border-color:var(--green-mid)}
+.module.locked{opacity:.45;cursor:not-allowed}
+.mod-icon{font-size:22px;margin-bottom:8px}
+.mod-name{font-weight:600;font-size:14px;margin-bottom:2px}
+.mod-meta{font-size:11px;color:var(--text3)}
+.mod-pill{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:99px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.pill-done{background:var(--green-light);color:var(--green)}
+.pill-active{background:var(--amber-light);color:var(--amber)}
+.pill-lock{background:var(--surface2);color:var(--text3)}
+.mod-prog-bar{height:2px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-top:10px}
+.mod-prog-fill{height:100%;background:var(--green-mid);border-radius:99px}
+
+/* ─── TOOLS GRID ─── */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.tool-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);padding:1.25rem;cursor:pointer;transition:transform .15s,border-color .15s}
+.tool-card:hover{transform:translateY(-2px);border-color:var(--border2)}
+.tool-icon{font-size:24px;margin-bottom:10px}
+.tool-name{font-weight:600;font-size:14px;margin-bottom:3px}
+.tool-desc{font-size:12px;color:var(--text3);line-height:1.5}
+
+/* ─── BADGES ─── */
+.badges-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem}
+.badge-chip{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:99px;font-size:12px;border:1px solid var(--border);background:var(--surface2);color:var(--text3);transition:all .3s}
+.badge-chip.earned{background:var(--purple-light);border-color:#c4bef8;color:var(--purple)}
+.badge-chip .bi{font-size:13px}
+
+/* ─── LEADERBOARD ─── */
+.lb-table{background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);overflow:hidden;margin-bottom:2rem}
+.lb-row{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;transition:background .15s}
+.lb-row:hover{background:var(--surface2)}
+.lb-row.you-row{background:var(--green-light)}
+.lb-rank{font-family:var(--mono);font-size:12px;color:var(--text3);width:22px;text-align:center}
+.lb-rank.gold{color:#b8720f;font-weight:500}
+.lb-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.lb-av.you-av{background:var(--green-light);color:var(--green);border:1px solid #a8dbbf}
+.lb-av.oth-av{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+.lb-name{flex:1;font-size:14px}
+.lb-name small{font-size:10px;color:var(--text3);display:block}
+.lb-xp-val{font-family:var(--mono);font-size:12px;color:var(--text2)}
+
+/* ─── QUIZ SCREEN ─── */
+.quiz-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem}
+.back-btn{background:none;border:1px solid var(--border);border-radius:var(--r2);padding:6px 14px;font-family:var(--sans);font-size:12px;color:var(--text2);cursor:pointer;transition:background .15s}
+.back-btn:hover{background:var(--surface2)}
+.quiz-mod-name{font-weight:600;font-size:15px}
+.qprog-text{font-family:var(--mono);font-size:11px;color:var(--text3)}
+.qprog-bar{height:3px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:1.75rem}
+.qprog-fill{height:100%;background:var(--green-mid);border-radius:99px;transition:width .4s ease}
+
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);padding:1.75rem;margin-bottom:1.1rem}
+.q-num{font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem}
+.q-text{font-family:var(--serif);font-size:20px;font-weight:400;color:var(--text);line-height:1.45;letter-spacing:-.01em}
+.q-diff{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:99px;margin-top:.75rem}
+.diff-easy{background:var(--green-light);color:var(--green)}
+.diff-med{background:var(--amber-light);color:var(--amber)}
+.diff-hard{background:var(--red-light);color:var(--red)}
+
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+@media(max-width:500px){.opts-grid{grid-template-columns:1fr}}
+.opt{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1.1rem;font-size:14px;color:var(--text);cursor:pointer;text-align:left;transition:all .15s;line-height:1.4;font-family:var(--sans)}
+.opt:hover:not(:disabled){border-color:var(--border2);background:var(--surface2)}
+.opt.correct{background:var(--green-light);border-color:#a8dbbf;color:var(--green-dark)}
+.opt.wrong{background:var(--red-light);border-color:#f0baba;color:#6b1c1c}
+.opt:disabled{cursor:not-allowed}
+
+.hint-btn{background:none;border:1px dashed var(--border2);border-radius:var(--r2);padding:7px 16px;font-size:12px;color:var(--text2);cursor:pointer;margin-bottom:1rem;font-family:var(--sans);transition:all .15s;display:flex;align-items:center;gap:6px}
+.hint-btn:hover{background:var(--blue-light);border-color:#a0b8f0;color:var(--blue)}
+.hint-box{background:var(--blue-light);border:1px solid #b8ccf6;border-radius:var(--r);padding:1rem 1.25rem;font-size:13px;line-height:1.6;color:#1a3a8a;margin-bottom:1rem;display:none}
+.hint-box.show{display:block}
+.hint-loading{color:var(--blue);font-style:italic}
+
+.fb-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.4rem;font-size:13px;line-height:1.6;display:none;margin-bottom:1rem}
+.fb-box.show{display:block}
+.fb-box.good{background:var(--green-light);border-color:#a8dbbf;color:var(--green-dark)}
+.fb-box.bad{background:var(--red-light);border-color:#f0baba;color:#6b1c1c}
+.fb-box strong{font-weight:600;display:block;margin-bottom:3px}
+.xp-flash{font-family:var(--mono);font-size:11px;color:var(--green-mid);margin-top:6px;display:none}
+.xp-flash.show{display:block}
+
+.next-btn{width:100%;background:var(--text);color:#fff;border:none;border-radius:var(--r);padding:13px;font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;display:none;transition:opacity .15s;letter-spacing:.01em}
+.next-btn:hover{opacity:.85}
+.next-btn.show{display:block}
+
+/* ─── RESULTS ─── */
+.res-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);padding:2.5rem;text-align:center;margin-bottom:1.5rem}
+.res-icon{font-size:52px;margin-bottom:1rem}
+.res-title{font-family:var(--serif);font-size:28px;font-weight:400;letter-spacing:-.02em;margin-bottom:.4rem}
+.res-sub{color:var(--text2);font-size:13px;margin-bottom:2rem}
+.res-stats{display:flex;justify-content:center;gap:3rem;margin-bottom:2rem;flex-wrap:wrap}
+.rs-val{font-family:var(--mono);font-size:30px;font-weight:500}
+.rs-lbl{font-size:11px;color:var(--text3);margin-top:3px}
+.res-badge{display:inline-block;background:var(--purple-light);border:1px solid #c4bef8;color:var(--purple);border-radius:99px;padding:8px 22px;font-size:13px;font-weight:500;margin-bottom:2rem}
+.res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:var(--text);color:#fff;border:none;border-radius:var(--r2);padding:12px 28px;font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s}
+.btn-primary:hover{opacity:.85}
+.btn-sec{background:none;color:var(--text);border:1px solid var(--border);border-radius:var(--r2);padding:12px 28px;font-family:var(--sans);font-size:14px;cursor:pointer;transition:background .15s}
+.btn-sec:hover{background:var(--surface2)}
+
+/* ─── TOOLS / CALCULATORS ─── */
+.calc-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.75rem}
+.calc-title{font-family:var(--serif);font-size:24px;font-weight:400}
+.calc-body{background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);padding:1.75rem;margin-bottom:1.5rem}
+.field-label{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:6px;display:block}
+.field-row{margin-bottom:1.1rem}
+.calc-input{width:100%;border:1px solid var(--border);border-radius:var(--r2);padding:10px 14px;font-family:var(--sans);font-size:14px;background:var(--bg);color:var(--text);outline:none;transition:border-color .15s}
+.calc-input:focus{border-color:var(--border2)}
+.calc-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.calc-row{grid-template-columns:1fr}}
+.calc-slider-row{display:flex;align-items:center;gap:12px;margin-bottom:.5rem}
+.calc-slider{flex:1;accent-color:var(--green-mid)}
+.calc-slider-val{font-family:var(--mono);font-size:13px;color:var(--text2);min-width:50px;text-align:right}
+.calc-btn{background:var(--text);color:#fff;border:none;border-radius:var(--r2);padding:12px 24px;font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s;width:100%}
+.calc-btn:hover{opacity:.85}
+.result-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;margin-top:1.25rem;display:none}
+.result-box.show{display:block}
+.result-main{font-family:var(--mono);font-size:28px;font-weight:500;color:var(--text);margin-bottom:.5rem}
+.result-breakdown{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:1rem}
+.rb-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:.75rem 1rem}
+.rb-val{font-family:var(--mono);font-size:16px;font-weight:500;color:var(--text)}
+.rb-lbl{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* ─── AI COACH ─── */
+.coach-area{background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);overflow:hidden;margin-bottom:1.5rem}
+.coach-msgs{padding:1.25rem;min-height:200px;max-height:380px;overflow-y:auto;display:flex;flex-direction:column;gap:.85rem}
+.msg{max-width:82%;line-height:1.55}
+.msg.coach{align-self:flex-start}
+.msg.user{align-self:flex-end}
+.msg-bubble{padding:.75rem 1rem;border-radius:14px;font-size:14px}
+.msg.coach .msg-bubble{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px}
+.msg.user .msg-bubble{background:var(--text);color:#fff;border-bottom-right-radius:4px}
+.msg-name{font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:4px}
+.msg.user .msg-name{text-align:right}
+.coach-input-row{display:flex;gap:8px;padding:.85rem 1.1rem;border-top:1px solid var(--border);background:var(--bg)}
+.coach-inp{flex:1;border:1px solid var(--border);border-radius:99px;padding:9px 16px;font-family:var(--sans);font-size:14px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s}
+.coach-inp:focus{border-color:var(--border2)}
+.coach-send{background:var(--text);color:#fff;border:none;border-radius:99px;padding:9px 20px;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+.coach-send:hover{opacity:.85}
+.coach-send:disabled{opacity:.4;cursor:not-allowed}
+.coach-chips{display:flex;flex-wrap:wrap;gap:7px;padding:.85rem 1.1rem;border-top:1px solid var(--border)}
+.chip{background:none;border:1px solid var(--border);border-radius:99px;padding:5px 14px;font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--sans);transition:all .15s}
+.chip:hover{background:var(--surface2);border-color:var(--border2);color:var(--text)}
+
+/* ─── GLOSSARY ─── */
+.glos-search{width:100%;border:1px solid var(--border);border-radius:var(--r);padding:10px 16px;font-family:var(--sans);font-size:14px;background:var(--surface);color:var(--text);outline:none;margin-bottom:1rem;transition:border-color .15s}
+.glos-search:focus{border-color:var(--border2)}
+.glos-list{display:flex;flex-direction:column;gap:8px;margin-bottom:2rem}
+.glos-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;cursor:pointer;transition:border-color .15s}
+.glos-item:hover{border-color:var(--border2)}
+.glos-term{font-weight:600;font-size:14px;margin-bottom:3px;display:flex;justify-content:space-between;align-items:center}
+.glos-def{font-size:13px;color:var(--text2);line-height:1.5;display:none}
+.glos-def.open{display:block}
+.glos-tag{font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:99px;background:var(--surface2);color:var(--text3)}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--text);color:#fff;border-radius:99px;padding:10px 24px;font-size:13px;font-weight:500;z-index:999;transition:transform .4s cubic-bezier(.16,1,.3,1);white-space:nowrap;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ─── BADGE POPUP ─── */
+.badge-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);padding:2.5rem 3rem;text-align:center;z-index:500;display:none;box-shadow:0 24px 80px rgba(0,0,0,.14);max-width:340px;width:90%}
+.badge-popup.show{display:block;animation:popIn .4s cubic-bezier(.16,1,.3,1) forwards}
+.badge-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:499;display:none}
+.badge-overlay.show{display:block}
+@keyframes popIn{from{transform:translate(-50%,-50%) scale(.8);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.bp-icon{font-size:56px;margin-bottom:.75rem}
+.bp-title{font-family:var(--serif);font-size:22px;margin-bottom:.4rem}
+.bp-sub{font-size:13px;color:var(--text2);margin-bottom:1.5rem}
+.bp-close{background:var(--text);color:#fff;border:none;border-radius:var(--r2);padding:10px 28px;font-family:var(--sans);font-size:14px;cursor:pointer}
+
+/* ─── DIVIDER ─── */
+.divider{height:1px;background:var(--border);margin:2rem 0}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .3s ease forwards}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Fiscal<span>Quest</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('home',this)">Home</button>
+    <button class="nav-tab" onclick="switchTab('quiz-select',this)">Modules</button>
+    <button class="nav-tab" onclick="switchTab('tools',this)">Tools</button>
+    <button class="nav-tab" onclick="switchTab('coach',this)">AI Coach</button>
+    <button class="nav-tab" onclick="switchTab('glossary',this)">Glossary</button>
+  </div>
+  <div class="nav-xp">XP <strong id="nav-xp">350</strong></div>
+  <div class="nav-av">AC</div>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- BADGE POPUP -->
+<div class="badge-overlay" id="badge-overlay" onclick="closeBadge()"></div>
+<div class="badge-popup" id="badge-popup">
+  <div class="bp-icon" id="bp-icon">🏆</div>
+  <div class="bp-title" id="bp-title">Badge Unlocked!</div>
+  <div class="bp-sub" id="bp-sub">You earned a new badge.</div>
+  <button class="bp-close" onclick="closeBadge()">Awesome!</button>
+</div>
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<div id="screen-home" class="screen active">
+<div class="container">
+  <div class="hero">
+    <div class="hero-eyebrow">Financial Literacy · Gamified</div>
+    <h1>Learn money.<br><em>Level up</em> your life.</h1>
+    <p>Master budgeting, credit, investing, mortgages, and more through bite-sized challenges. Earn XP and badges as you grow.</p>
+  </div>
+
+  <!-- Player card -->
+  <div class="player-card">
+    <div class="p-av">AC</div>
+    <div class="p-info">
+      <div class="p-name">Andrew</div>
+      <div class="p-lvl" id="lvl-label">Level 2 · Budgeter</div>
+    </div>
+    <div class="xp-sec">
+      <div class="xp-top"><span>To Level 3</span><strong id="xp-display">350 / 1000</strong></div>
+      <div class="xp-track"><div class="xp-fill" id="xp-bar" style="width:35%"></div></div>
+    </div>
+    <div class="p-stats">
+      <div><div class="p-stat-val" id="s-streak">3🔥</div><div class="p-stat-lbl">Streak</div></div>
+      <div><div class="p-stat-val" id="s-total">12</div><div class="p-stat-lbl">Done</div></div>
+      <div><div class="p-stat-val" id="s-acc">83%</div><div class="p-stat-lbl">Accuracy</div></div>
+    </div>
+  </div>
+
+  <!-- Daily challenge -->
+  <div class="sec-label">Today's Challenge</div>
+  <div class="daily-banner" onclick="startDailyChallenge()">
+    <div class="daily-flame">⚡</div>
+    <div class="daily-text">
+      <div class="daily-title">Daily Challenge — Sunday, March 29</div>
+      <div class="daily-sub">5 mixed questions · Bonus 200 XP · Resets in 6h 42m</div>
+    </div>
+    <div class="daily-pill">Start Now →</div>
+  </div>
+
+  <!-- Modules preview -->
+  <div class="sec-label">Modules</div>
+  <div class="module-grid" id="home-modules"></div>
+
+  <!-- Quick tools -->
+  <div class="sec-label">Quick Tools</div>
+  <div class="tools-grid">
+    <div class="tool-card" onclick="switchTab('tools',null);showTool('budget')">
+      <div class="tool-icon">📊</div>
+      <div class="tool-name">Budget Calculator</div>
+      <div class="tool-desc">Apply the 50/30/20 rule to your income</div>
+    </div>
+    <div class="tool-card" onclick="switchTab('tools',null);showTool('mortgage')">
+      <div class="tool-icon">🏠</div>
+      <div class="tool-name">Mortgage Estimator</div>
+      <div class="tool-desc">Monthly payment & total interest</div>
+    </div>
+    <div class="tool-card" onclick="switchTab('tools',null);showTool('compound')">
+      <div class="tool-icon">📈</div>
+      <div class="tool-name">Compound Interest</div>
+      <div class="tool-desc">Watch your money grow over time</div>
+    </div>
+    <div class="tool-card" onclick="switchTab('coach',null)">
+      <div class="tool-icon">🤖</div>
+      <div class="tool-name">AI Coach</div>
+      <div class="tool-desc">Ask any money question in plain English</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Badges -->
+  <div class="sec-label">Your Badges</div>
+  <div class="badges-grid" id="home-badges"></div>
+
+  <div class="divider"></div>
+
+  <!-- Leaderboard -->
+  <div class="sec-label">Leaderboard</div>
+  <div class="lb-table">
+    <div class="lb-row"><div class="lb-rank gold">1</div><div class="lb-av oth-av">MK</div><div class="lb-name">Maria K.<small>Level 5 · Investor</small></div><div class="lb-xp-val">4,820 xp</div></div>
+    <div class="lb-row"><div class="lb-rank gold">2</div><div class="lb-av oth-av">JS</div><div class="lb-name">Jake S.<small>Level 4 · Saver</small></div><div class="lb-xp-val">3,200 xp</div></div>
+    <div class="lb-row you-row"><div class="lb-rank gold">3</div><div class="lb-av you-av">AC</div><div class="lb-name" style="color:var(--green)">You<small style="color:#4a9c6e">Level 2 · Budgeter</small></div><div class="lb-xp-val" style="color:var(--green)" id="lb-xp">350 xp</div></div>
+    <div class="lb-row"><div class="lb-rank">4</div><div class="lb-av oth-av">RP</div><div class="lb-name">Riley P.<small>Level 2 · Saver</small></div><div class="lb-xp-val">280 xp</div></div>
+    <div class="lb-row"><div class="lb-rank">5</div><div class="lb-av oth-av">TN</div><div class="lb-name">Taylor N.<small>Level 1 · Rookie</small></div><div class="lb-xp-val">140 xp</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ QUIZ SELECT ═══════════════ -->
+<div id="screen-quiz-select" class="screen">
+<div class="container">
+  <div class="hero" style="padding-top:1.5rem">
+    <div class="hero-eyebrow">All Modules</div>
+    <h1>Choose your <em>challenge</em></h1>
+  </div>
+  <div class="module-grid" id="all-modules" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))"></div>
+</div>
+</div>
+
+<!-- ═══════════════ QUIZ ACTIVE ═══════════════ -->
+<div id="screen-quiz" class="screen">
+<div class="container">
+  <div class="quiz-top">
+    <button class="back-btn" onclick="switchTab('quiz-select',null)">← Modules</button>
+    <div class="quiz-mod-name" id="q-mod-name">Credit Scores</div>
+    <div class="qprog-text" id="q-prog-text">1 / 10</div>
+  </div>
+  <div class="qprog-bar"><div class="qprog-fill" id="q-prog-fill" style="width:10%"></div></div>
+
+  <div class="q-card">
+    <div class="q-num" id="q-num">Question 1</div>
+    <div class="q-text" id="q-text">Loading...</div>
+    <div class="q-diff" id="q-diff"></div>
+  </div>
+
+  <button class="hint-btn" id="hint-btn" onclick="getHint()">💡 Get AI Hint <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">(-10 XP)</span></button>
+  <div class="hint-box" id="hint-box"></div>
+
+  <div class="opts-grid" id="opts-grid"></div>
+  <div class="fb-box" id="fb-box"><strong id="fb-title"></strong><span id="fb-body"></span><div class="xp-flash" id="xp-flash">+75 XP earned!</div></div>
+  <button class="next-btn" id="next-btn" onclick="nextQ()">Continue →</button>
+</div>
+</div>
+
+<!-- ═══════════════ RESULTS ═══════════════ -->
+<div id="screen-results" class="screen">
+<div class="container">
+  <div class="res-card">
+    <div class="res-icon" id="res-icon">🎉</div>
+    <div class="res-title" id="res-title">Module Complete!</div>
+    <div class="res-sub" id="res-sub">Great work finishing this section.</div>
+    <div class="res-stats">
+      <div><div class="rs-val" id="rs-score">8/10</div><div class="rs-lbl">Correct</div></div>
+      <div><div class="rs-val" id="rs-xp">+600</div><div class="rs-lbl">XP Earned</div></div>
+      <div><div class="rs-val" id="rs-acc">80%</div><div class="rs-lbl">Accuracy</div></div>
+    </div>
+    <div class="res-badge" id="res-badge" style="display:none"></div>
+    <div class="res-btns">
+      <button class="btn-primary" onclick="retryModule()">Retry Module</button>
+      <button class="btn-sec" onclick="switchTab('quiz-select',null)">All Modules</button>
+      <button class="btn-sec" onclick="switchTab('home',null)">Home</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ TOOLS ═══════════════ -->
+<div id="screen-tools" class="screen">
+<div class="container">
+  <div class="hero" style="padding-top:1.5rem">
+    <div class="hero-eyebrow">Financial Tools</div>
+    <h1>Run the <em>numbers</em></h1>
+    <p>Interactive calculators to help you make real decisions.</p>
+  </div>
+
+  <div class="tools-grid" style="margin-bottom:2rem">
+    <div class="tool-card" onclick="showTool('budget')"><div class="tool-icon">📊</div><div class="tool-name">Budget Calculator</div><div class="tool-desc">50/30/20 rule breakdown</div></div>
+    <div class="tool-card" onclick="showTool('mortgage')"><div class="tool-icon">🏠</div><div class="tool-name">Mortgage Estimator</div><div class="tool-desc">Monthly payments & interest</div></div>
+    <div class="tool-card" onclick="showTool('compound')"><div class="tool-icon">📈</div><div class="tool-name">Compound Interest</div><div class="tool-desc">Investment growth over time</div></div>
+    <div class="tool-card" onclick="showTool('credit')"><div class="tool-icon">💳</div><div class="tool-name">Credit Utilization</div><div class="tool-desc">Check your ratio instantly</div></div>
+    <div class="tool-card" onclick="showTool('emergency')"><div class="tool-icon">🛡️</div><div class="tool-name">Emergency Fund</div><div class="tool-desc">How much should you save?</div></div>
+    <div class="tool-card" onclick="showTool('debt')"><div class="tool-icon">⚖️</div><div class="tool-name">Debt Payoff</div><div class="tool-desc">Avalanche vs snowball method</div></div>
+  </div>
+
+  <!-- BUDGET CALC -->
+  <div id="tool-budget" class="tool-panel" style="display:none">
+    <div class="calc-header"><div style="font-size:28px">📊</div><div class="calc-title">Budget Calculator</div></div>
+    <div class="calc-body">
+      <div class="field-row"><label class="field-label">Monthly Take-Home Income ($)</label><input class="calc-input" id="b-income" type="number" placeholder="e.g. 3500" value="3500"></div>
+      <button class="calc-btn" onclick="calcBudget()">Calculate My Budget</button>
+      <div class="result-box" id="b-result">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:.75rem;font-family:var(--mono)">YOUR 50/30/20 BREAKDOWN</div>
+        <div class="result-breakdown">
+          <div class="rb-item"><div class="rb-val" id="b-needs">$0</div><div class="rb-lbl">Needs (50%)</div></div>
+          <div class="rb-item"><div class="rb-val" id="b-wants">$0</div><div class="rb-lbl">Wants (30%)</div></div>
+          <div class="rb-item"><div class="rb-val" id="b-save">$0</div><div class="rb-lbl">Savings (20%)</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-top:1rem;line-height:1.6" id="b-advice"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MORTGAGE CALC -->
+  <div id="tool-mortgage" class="tool-panel" style="display:none">
+    <div class="calc-header"><div style="font-size:28px">🏠</div><div class="calc-title">Mortgage Estimator</div></div>
+    <div class="calc-body">
+      <div class="calc-row">
+        <div class="field-row"><label class="field-label">Home Price ($)</label><input class="calc-input" id="m-price" type="number" placeholder="400000" value="400000"></div>
+        <div class="field-row"><label class="field-label">Down Payment ($)</label><input class="calc-input" id="m-down" type="number" placeholder="80000" value="80000"></div>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Interest Rate: <strong id="m-rate-val">6.5%</strong></label>
+        <div class="calc-slider-row"><input type="range" class="calc-slider" id="m-rate" min="2" max="12" step="0.1" value="6.5" oninput="document.getElementById('m-rate-val').textContent=parseFloat(this.value).toFixed(1)+'%'"></div>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Loan Term: <strong id="m-term-val">30 years</strong></label>
+        <div class="calc-slider-row"><input type="range" class="calc-slider" id="m-term" min="10" max="30" step="5" value="30" oninput="document.getElementById('m-term-val').textContent=this.value+' years'"></div>
+      </div>
+      <button class="calc-btn" onclick="calcMortgage()">Estimate Payment</button>
+      <div class="result-box" id="m-result">
+        <div style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:.5rem">MONTHLY PAYMENT</div>
+        <div class="result-main" id="m-monthly">$0/mo</div>
+        <div class="result-breakdown">
+          <div class="rb-item"><div class="rb-val" id="m-principal">$0</div><div class="rb-lbl">Loan Amount</div></div>
+          <div class="rb-item"><div class="rb-val" id="m-total-int">$0</div><div class="rb-lbl">Total Interest</div></div>
+          <div class="rb-item"><div class="rb-val" id="m-total-cost">$0</div><div class="rb-lbl">Total Cost</div></div>
+          <div class="rb-item"><div class="rb-val" id="m-down-pct">20%</div><div class="rb-lbl">Down Payment %</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-top:1rem;line-height:1.6" id="m-advice"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPOUND CALC -->
+  <div id="tool-compound" class="tool-panel" style="display:none">
+    <div class="calc-header"><div style="font-size:28px">📈</div><div class="calc-title">Compound Interest Calculator</div></div>
+    <div class="calc-body">
+      <div class="calc-row">
+        <div class="field-row"><label class="field-label">Starting Amount ($)</label><input class="calc-input" id="c-principal" type="number" value="1000"></div>
+        <div class="field-row"><label class="field-label">Monthly Contribution ($)</label><input class="calc-input" id="c-monthly" type="number" value="200"></div>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Annual Return Rate: <strong id="c-rate-val">7%</strong></label>
+        <div class="calc-slider-row"><input type="range" class="calc-slider" id="c-rate" min="1" max="15" step="0.5" value="7" oninput="document.getElementById('c-rate-val').textContent=parseFloat(this.value).toFixed(1)+'%'"></div>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Years: <strong id="c-years-val">20 years</strong></label>
+        <div class="calc-slider-row"><input type="range" class="calc-slider" id="c-years" min="1" max="50" step="1" value="20" oninput="document.getElementById('c-years-val').textContent=this.value+' years'"></div>
+      </div>
+      <button class="calc-btn" onclick="calcCompound()">Calculate Growth</button>
+      <div class="result-box" id="c-result">
+        <div style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:.5rem">FUTURE VALUE</div>
+        <div class="result-main" id="c-future">$0</div>
+        <div class="result-breakdown">
+          <div class="rb-item"><div class="rb-val" id="c-invested">$0</div><div class="rb-lbl">Total Invested</div></div>
+          <div class="rb-item"><div class="rb-val" id="c-gains">$0</div><div class="rb-lbl">Investment Gains</div></div>
+          <div class="rb-item"><div class="rb-val" id="c-mult">0x</div><div class="rb-lbl">Money Multiplier</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-top:1rem;line-height:1.6" id="c-advice"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREDIT UTIL -->
+  <div id="tool-credit" class="tool-panel" style="display:none">
+    <div class="calc-header"><div style="font-size:28px">💳</div><div class="calc-title">Credit Utilization Checker</div></div>
+    <div class="calc-body">
+      <div class="calc-row">
+        <div class="field-row"><label class="field-label">Total Credit Card Balance ($)</label><input class="calc-input" id="cu-bal" type="number" value="2000"></div>
+        <div class="field-row"><label class="field-label">Total Credit Limit ($)</label><input class="calc-input" id="cu-lim" type="number" value="10000"></div>
+      </div>
+      <button class="calc-btn" onclick="calcCredit()">Check My Ratio</button>
+      <div class="result-box" id="cu-result">
+        <div style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:.5rem">YOUR UTILIZATION</div>
+        <div class="result-main" id="cu-pct">0%</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:.75rem;line-height:1.6" id="cu-advice"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMERGENCY FUND -->
+  <div id="tool-emergency" class="tool-panel" style="display:none">
+    <div class="calc-header"><div style="font-size:28px">🛡️</div><div class="calc-title">Emergency Fund Calculator</div></div>
+    <div class="calc-body">
+      <div class="calc-row">
+        <div class="field-row"><label class="field-label">Monthly Rent/Mortgage ($)</label><input class="calc-input" id="ef-rent" type="number" value="1200"></div>
+        <div class="field-row"><label class="field-label">Monthly Food ($)</label><input class="calc-input" id="ef-food" type="number" value="400"></div>
+      </div>
+      <div class="calc-row">
+        <div class="field-row"><label class="field-label">Monthly Utilities ($)</label><input class="calc-input" id="ef-util" type="number" value="150"></div>
+        <div class="field-row"><label class="field-label">Monthly Transportation ($)</label><input class="calc-input" id="ef-trans" type="number" value="300"></div>
+      </div>
+      <button class="calc-btn" onclick="calcEmergency()">Calculate My Goal</button>
+      <div class="result-box" id="ef-result">
+        <div style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:.5rem">EMERGENCY FUND TARGETS</div>
+        <div class="result-breakdown">
+          <div class="rb-item"><div class="rb-val" id="ef-3mo">$0</div><div class="rb-lbl">3-Month Target</div></div>
+          <div class="rb-item"><div class="rb-val" id="ef-6mo">$0</div><div class="rb-lbl">6-Month Target</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-top:.75rem;line-height:1.6" id="ef-advice"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEBT PAYOFF -->
+  <div id="tool-debt" class="tool-panel" style="display:none">
+    <div class="calc-header"><div style="font-size:28px">⚖️</div><div class="calc-title">Debt Payoff Calculator</div></div>
+    <div class="calc-body">
+      <div class="calc-row">
+        <div class="field-row"><label class="field-label">Total Debt ($)</label><input class="calc-input" id="d-total" type="number" value="8000"></div>
+        <div class="field-row"><label class="field-label">Monthly Payment ($)</label><input class="calc-input" id="d-payment" type="number" value="300"></div>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Average Interest Rate: <strong id="d-rate-val">18%</strong></label>
+        <div class="calc-slider-row"><input type="range" class="calc-slider" id="d-rate" min="1" max="35" step="0.5" value="18" oninput="document.getElementById('d-rate-val').textContent=parseFloat(this.value).toFixed(1)+'%'"></div>
+      </div>
+      <button class="calc-btn" onclick="calcDebt()">Calculate Payoff</button>
+      <div class="result-box" id="d-result">
+        <div class="result-breakdown">
+          <div class="rb-item"><div class="rb-val" id="d-months">0 mo</div><div class="rb-lbl">Months to Payoff</div></div>
+          <div class="rb-item"><div class="rb-val" id="d-int-paid">$0</div><div class="rb-lbl">Interest Paid</div></div>
+          <div class="rb-item"><div class="rb-val" id="d-total-paid">$0</div><div class="rb-lbl">Total Paid</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-top:.75rem;line-height:1.6" id="d-advice"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════ AI COACH ═══════════════ -->
+<div id="screen-coach" class="screen">
+<div class="container">
+  <div class="hero" style="padding-top:1.5rem">
+    <div class="hero-eyebrow">AI Financial Coach</div>
+    <h1>Ask me <em>anything</em></h1>
+    <p>Your personal money mentor, available 24/7. No jargon, no judgment.</p>
+  </div>
+
+  <div class="coach-area">
+    <div class="coach-msgs" id="coach-msgs">
+      <div class="msg coach fade-in">
+        <div class="msg-name">Coach</div>
+        <div class="msg-bubble">Hey Andrew! 👋 I'm your AI financial coach. I can explain any money concept in plain English, help you understand your quiz answers, or just answer any financial question you have. What's on your mind?</div>
+      </div>
+    </div>
+    <div class="coach-chips">
+      <button class="chip" onclick="askCoach('What is the best way to start investing with $500?')">How do I start investing?</button>
+      <button class="chip" onclick="askCoach('How do I build credit from scratch?')">Building credit from zero</button>
+      <button class="chip" onclick="askCoach('Explain compound interest with a simple example')">Compound interest explained</button>
+      <button class="chip" onclick="askCoach('What is the difference between a Roth IRA and a traditional IRA?')">Roth vs Traditional IRA</button>
+      <button class="chip" onclick="askCoach('How much house can I afford on a $70,000 salary?')">How much house can I afford?</button>
+    </div>
+    <div class="coach-input-row">
+      <input class="coach-inp" id="coach-inp" placeholder="Ask any money question..." onkeydown="if(event.key==='Enter')sendCoach()">
+      <button class="coach-send" id="coach-send-btn" onclick="sendCoach()">Ask →</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ GLOSSARY ═══════════════ -->
+<div id="screen-glossary" class="screen">
+<div class="container">
+  <div class="hero" style="padding-top:1.5rem">
+    <div class="hero-eyebrow">Financial Glossary</div>
+    <h1>Know the <em>terms</em></h1>
+  </div>
+  <input class="glos-search" id="glos-search" placeholder="Search terms..." oninput="filterGlossary(this.value)">
+  <div class="glos-list" id="glos-list"></div>
+</div>
+</div>
+
+<script>
+// ═══════════ DATA ═══════════
+const MODULES = [
+  { id:0, name:'Budgeting', icon:'💰', status:'done', progress:10,
+    questions:[
+      {q:'What does the 50/30/20 rule mean?',opts:['50% savings, 30% needs, 20% wants','50% needs, 30% wants, 20% savings','50% investments, 30% rent, 20% food','50% income, 30% tax, 20% bills'],correct:1,diff:'easy',explain:'The 50/30/20 rule: 50% of after-tax income to needs, 30% to wants, 20% to savings and debt.'},
+      {q:'Which of these is a "need" in a budget?',opts:['Netflix subscription','Eating out at restaurants','Monthly rent payment','New sneakers'],correct:2,diff:'easy',explain:'Needs are essentials: housing, food, utilities, transportation. Everything else is a "want."'},
+      {q:'What is an emergency fund meant to cover?',opts:['A vacation fund','3–6 months of essential expenses','Retirement savings','Investment losses'],correct:1,diff:'easy',explain:'An emergency fund covers 3–6 months of living expenses — protection against job loss, medical emergencies, or major repairs.'},
+      {q:'If you earn $3,000/month, how much goes to savings with 50/30/20?',opts:['$300','$450','$600','$900'],correct:2,diff:'med',explain:'20% of $3,000 = $600 toward savings and debt payoff each month.'},
+      {q:'What is "lifestyle creep"?',opts:['Increasing savings as income rises','Spending more as you earn more','Moving to a bigger city','Getting promoted at work'],correct:1,diff:'med',explain:'Lifestyle creep is spending more as your income grows, leaving you no better off financially.'},
+      {q:'What budgeting method assigns every dollar a specific job?',opts:['Envelope method','Zero-based budgeting','Percentage method','Pay-yourself-first'],correct:1,diff:'med',explain:'Zero-based budgeting means income minus all allocated expenses equals zero — every dollar has a purpose.'},
+      {q:'What is the very first step when creating a budget?',opts:['Cut all subscriptions','Calculate your net income','Open a savings account','Pay off all debt first'],correct:1,diff:'easy',explain:'You must know your actual take-home (net) income before you can allocate it. Gross income is misleading.'},
+      {q:'What is net income?',opts:['Total salary before deductions','Income after taxes and deductions','Income from investments only','Monthly bonus payments'],correct:1,diff:'easy',explain:'Net income is your take-home pay — what remains after taxes, Social Security, and other withholdings.'},
+      {q:'How often should you review your budget?',opts:['Once a year','Only when income changes','Monthly','Every 5 years'],correct:2,diff:'easy',explain:'Monthly budget reviews help you catch overspending, adjust for changes, and stay on track with financial goals.'},
+      {q:'Which expense is NOT a "want"?',opts:['Streaming subscriptions','Car insurance payment','Dining out','Concert tickets'],correct:1,diff:'med',explain:'Car insurance is a "need" — it\'s legally required in most states and protects you from major financial loss.'}
+    ]
+  },
+  { id:1, name:'Credit Scores', icon:'💳', status:'active', progress:4,
+    questions:[
+      {q:'What is the most important factor in your FICO credit score?',opts:['Your income level','Payment history (35%)','Number of credit cards','Your age'],correct:1,diff:'easy',explain:'Payment history accounts for 35% of your FICO score — the single largest factor. Even one missed payment can significantly hurt your score.'},
+      {q:'What credit utilization rate is generally recommended?',opts:['Under 10%','Under 30%','Under 50%','Under 70%'],correct:1,diff:'easy',explain:'Keep utilization below 30%. Under 10% is ideal for top scores. Utilization = balance ÷ credit limit × 100.'},
+      {q:'How long does a missed payment stay on your credit report?',opts:['1 year','3 years','7 years','10 years'],correct:2,diff:'med',explain:'Most negative items stay on your report for 7 years. Their impact fades over time but they remain visible to lenders.'},
+      {q:'What credit score range is considered "good" by most lenders?',opts:['500–579','580–669','670–739','800+'],correct:2,diff:'easy',explain:'670–739 is "good." 740–799 is "very good." 800+ is "exceptional." Below 670 limits your loan options.'},
+      {q:'What happens when a lender does a "hard inquiry"?',opts:['Your score increases','Nothing changes','Score may drop a few points','Your account gets frozen'],correct:2,diff:'med',explain:'Hard inquiries occur when applying for credit and can lower your score by a few points, staying on your report for 2 years.'},
+      {q:'What action most quickly improves a low credit score?',opts:['Opening many new accounts','Making all payments on time','Closing old accounts','Maxing out one card'],correct:1,diff:'easy',explain:'Consistent on-time payments have the biggest positive impact. Improvement takes several months of consistent behavior.'},
+      {q:'How does closing an old credit card affect your score?',opts:['It always helps your score','It can lower your score','It has zero effect','It removes all negative history'],correct:1,diff:'med',explain:'Closing old cards reduces available credit (raising utilization) and shortens credit history — both hurt your score.'},
+      {q:'What is the best way to build credit from scratch?',opts:['Take out a large personal loan','Get a secured credit card','Avoid all forms of credit','Ask a family member to add you as authorized user'],correct:3,diff:'hard',explain:'Being added as an authorized user on a responsible person\'s account gives you instant credit history without risk. A secured card is also a great option.'},
+      {q:'Which of these does NOT affect your credit score?',opts:['Payment history','Credit utilization','Your salary','Length of credit history'],correct:2,diff:'easy',explain:'Your income is NOT in your credit score. Scores are based on credit behavior: payments, utilization, inquiries, and history length.'},
+      {q:'What percentage of your score comes from "credit mix"?',opts:['5%','10%','15%','35%'],correct:1,diff:'hard',explain:'Credit mix — having different types of credit (cards, loans, mortgages) — accounts for 10% of your FICO score.'}
+    ]
+  },
+  { id:2, name:'Investing', icon:'📈', status:'active', progress:0,
+    questions:[
+      {q:'What does owning a stock represent?',opts:['A loan to a company','Partial ownership (equity) in a company','A government-backed bond','A type of savings account'],correct:1,diff:'easy',explain:'A stock represents fractional ownership in a company. If the company grows, your shares typically increase in value.'},
+      {q:'What does "diversification" mean in investing?',opts:['Putting all money in one top stock','Spreading investments across different assets','Only buying government bonds','Investing the same amount every month'],correct:1,diff:'easy',explain:'Diversification reduces risk by spreading investments across assets, sectors, and regions so no single loss can wipe you out.'},
+      {q:'What is an index fund?',opts:['A fund managed by one expert','A fund that tracks a market index like the S&P 500','A high-risk cryptocurrency fund','A government savings program'],correct:1,diff:'easy',explain:'Index funds passively track a market index. They offer broad diversification and low fees — Warren Buffett recommends them for most investors.'},
+      {q:'What is compound interest?',opts:['Interest only on your original deposit','Interest on principal AND accumulated interest','A type of savings bond','A monthly bank fee'],correct:1,diff:'easy',explain:'Compound interest earns returns on your returns. Over time this creates exponential growth — the reason starting early is so powerful.'},
+      {q:'What is a 401(k)?',opts:['A type of credit score','An employer-sponsored retirement savings plan','A government tax form','A type of personal loan'],correct:1,diff:'easy',explain:'A 401(k) is a tax-advantaged retirement account. Many employers match contributions — always contribute at least enough to get the full match.'},
+      {q:'What is the general relationship between risk and potential return?',opts:['Higher risk = lower return','Higher risk = higher potential return','Risk and return are unrelated','Lower risk always means higher return'],correct:1,diff:'easy',explain:'Generally, higher potential returns come with higher risk. Conservative investments like bonds have lower risk and lower expected returns.'},
+      {q:'What does "dollar-cost averaging" mean?',opts:['Investing a lump sum all at once','Investing a fixed amount at regular intervals','Only buying when prices are at their lowest','Selling only at the highest price'],correct:1,diff:'med',explain:'Dollar-cost averaging means investing a fixed amount regularly regardless of price. It removes emotion and reduces the impact of volatility.'},
+      {q:'What is the S&P 500?',opts:['A savings account interest rate','An index tracking 500 large US companies','A government bond program','A cryptocurrency exchange'],correct:1,diff:'easy',explain:'The S&P 500 tracks 500 of the largest US public companies. It\'s the most widely used benchmark for the overall US stock market.'},
+      {q:'At what age can you withdraw from a traditional IRA without penalty?',opts:['55','59½','62','65'],correct:1,diff:'hard',explain:'You can withdraw from a traditional IRA without penalty at age 59½. Early withdrawals face a 10% penalty plus income taxes.'},
+      {q:'What is an ETF?',opts:['Equity Transfer Fund','Exchange-Traded Fund','External Tax Fund','Emerging Trade Finance'],correct:1,diff:'med',explain:'An ETF (Exchange-Traded Fund) trades on stock exchanges like individual stocks but holds a diversified basket of assets.'}
+    ]
+  },
+  { id:3, name:'Mortgages', icon:'🏠', status:'active', progress:0,
+    questions:[
+      {q:'What is a down payment on a home?',opts:['Monthly mortgage payment','Upfront cash toward the home\'s purchase price','Annual home insurance fee','Property tax payment'],correct:1,diff:'easy',explain:'A down payment is the cash you pay upfront when buying a home. The remaining balance is financed through your mortgage.'},
+      {q:'What does putting 20% down typically help you avoid?',opts:['Property taxes','Private Mortgage Insurance (PMI)','Home inspection fees','All interest payments'],correct:1,diff:'med',explain:'PMI protects the lender if you default. Putting 20% down eliminates this extra monthly cost, saving hundreds annually.'},
+      {q:'What is APR in a mortgage context?',opts:['Annual Payment Rate','Annual Percentage Rate — true yearly cost including fees','Average Property Rate','Adjusted Payment Ratio'],correct:1,diff:'med',explain:'APR includes the interest rate plus all fees, giving you the true yearly cost. Always compare APRs when shopping for mortgages.'},
+      {q:'What is a fixed-rate mortgage?',opts:['Rate changes with the market monthly','Interest rate stays the same for the entire loan term','Rate fixed for 5 years then adjusts','Rate set by the government each year'],correct:1,diff:'easy',explain:'A fixed-rate mortgage locks in your interest rate forever, giving you predictable monthly payments for the life of the loan.'},
+      {q:'What does "amortization" mean?',opts:['Paying off a loan with regular scheduled payments over time','A penalty for paying off a loan early','Annual interest rate adjustment','Property value assessment'],correct:0,diff:'hard',explain:'Amortization is paying off a loan through scheduled payments. Early payments go mostly to interest; later ones reduce principal.'},
+      {q:'What is a mortgage pre-approval letter?',opts:['A guarantee you will get the loan','A lender\'s conditional commitment to lend up to a certain amount','Proof that you own a home','A full credit report'],correct:1,diff:'med',explain:'Pre-approval means a lender reviewed your finances and is willing to lend up to a certain amount — making you a credible buyer.'},
+      {q:'What is "equity" in a home?',opts:['Your outstanding loan balance','Home\'s market value minus what you still owe','Your monthly principal payment','The home\'s tax assessed value'],correct:1,diff:'med',explain:'Home equity is the portion you "own" — market value minus remaining mortgage. It grows as you pay down debt or the home appreciates.'},
+      {q:'Which factor most affects your mortgage interest rate offer?',opts:['The color of the house','Your credit score','The number of bedrooms','The neighborhood\'s name'],correct:1,diff:'easy',explain:'Your credit score heavily influences your rate. A higher score means a lower rate — the difference can be tens of thousands over 30 years.'},
+      {q:'What are "closing costs"?',opts:['Your final mortgage payment','Fees paid to finalize the home purchase transaction','Moving and renovation expenses','Your first month\'s mortgage payment'],correct:1,diff:'med',explain:'Closing costs are fees to finalize the purchase — typically 2–5% of the loan amount, covering appraisal, title, and lender fees.'},
+      {q:'What is the most common mortgage loan term?',opts:['5 years','10 years','15 or 30 years','50 years'],correct:2,diff:'easy',explain:'15-year and 30-year mortgages are most common. 15-year loans have higher payments but you pay significantly less total interest.'}
+    ]
+  },
+  { id:4, name:'Taxes', icon:'💸', status:'active', progress:0,
+    questions:[
+      {q:'What is the key difference between a tax deduction and a tax credit?',opts:['They are identical','Deductions reduce taxable income; credits directly reduce tax owed','Credits reduce income; deductions reduce tax bill','Both reduce your refund equally'],correct:1,diff:'med',explain:'Deductions lower your taxable income (saving you a percentage). Credits directly reduce your tax bill dollar-for-dollar — credits are more valuable.'},
+      {q:'When is the typical federal tax filing deadline in the US?',opts:['March 1','April 15','June 30','December 31'],correct:1,diff:'easy',explain:'Federal taxes are generally due April 15. Extensions are available but only extend the filing deadline, not any payment due.'},
+      {q:'What does "tax withholding" mean?',opts:['Hiding income from the IRS','Taxes your employer takes from each paycheck and sends to the IRS','A penalty for filing late','A refund from the government'],correct:1,diff:'easy',explain:'Withholding is the portion of each paycheck sent to the IRS in advance. A big refund means you overpaid — that\'s a free loan to the government.'},
+      {q:'What is the "standard deduction"?',opts:['A flat amount reducing taxable income without itemizing','A deduction only for homeowners','A deduction for business expenses','The minimum tax you must pay'],correct:0,diff:'med',explain:'The standard deduction is a flat amount subtracted from income before calculating taxes. Most people take it instead of itemizing.'},
+      {q:'What is a Roth IRA\'s main tax advantage?',opts:['Contributions are tax-deductible','Withdrawals in retirement are completely tax-free','There are no contribution limits','Your employer matches contributions'],correct:1,diff:'med',explain:'Roth IRA contributions use after-tax dollars, but all qualified withdrawals in retirement — including decades of growth — are tax-free.'},
+      {q:'What does FICA tax fund?',opts:['Federal highways','Social Security and Medicare','Public education','Military spending'],correct:1,diff:'easy',explain:'FICA (Federal Insurance Contributions Act) taxes fund Social Security and Medicare. Both employees and employers pay FICA.'},
+      {q:'What is a W-2 form?',opts:['A self-employment tax form','A form showing wages paid and taxes withheld by your employer','A form for investment income','A charitable donation receipt'],correct:1,diff:'easy',explain:'Your employer sends a W-2 showing your annual earnings and how much was withheld for federal, state, and Social Security taxes.'},
+      {q:'What is a 1099 form used for?',opts:['Reporting employer wages','Reporting income from freelance work, investments, or other non-employment sources','Claiming tax credits','Reporting student loan interest'],correct:1,diff:'med',explain:'A 1099 reports income not from an employer — freelance work, gig income, interest, dividends, and more.'},
+      {q:'What are "progressive" tax brackets?',opts:['Everyone pays the same flat rate','Higher income ranges are taxed at higher rates','Only the wealthy pay taxes','Tax rates that decrease as income rises'],correct:1,diff:'med',explain:'The US uses progressive brackets — only income within each range is taxed at that bracket\'s rate. Going into a higher bracket doesn\'t tax all your income.'},
+      {q:'What is the difference between "gross" and "net" income?',opts:['They are the same thing','Gross is before deductions; net is take-home after taxes','Net is before taxes; gross is after','Gross only includes salary; net includes bonuses'],correct:1,diff:'easy',explain:'Gross income is your total earnings before any deductions. Net income is what you actually take home after taxes and withholdings.'}
+    ]
+  },
+  { id:5, name:'Banking Basics', icon:'🏦', status:'active', progress:0,
+    questions:[
+      {q:'What is the key difference between checking and savings accounts?',opts:['No functional difference','Checking is for daily spending; savings earns interest and stores money','Savings is for spending; checking earns interest','Checking earns more interest'],correct:1,diff:'easy',explain:'Checking accounts handle daily transactions. Savings accounts earn interest and are for money you don\'t need immediately.'},
+      {q:'What does FDIC insurance protect?',opts:['Stock and bond investments','Bank deposits up to $250,000 per depositor per bank','Only business accounts','Investment and brokerage accounts'],correct:1,diff:'med',explain:'The FDIC insures deposits up to $250,000 per depositor, per bank, per ownership category — your money is safe if the bank fails.'},
+      {q:'What is a high-yield savings account?',opts:['A savings account that charges higher fees','An account paying significantly higher interest than traditional savings','An investment brokerage account','A retirement savings plan'],correct:1,diff:'easy',explain:'High-yield savings accounts (often at online banks) pay 10–20x more than traditional banks with minimal extra risk.'},
+      {q:'What is APY in banking?',opts:['Annual Payment Yield','Annual Percentage Yield — true return including compound interest','Average Principal per Year','Authorized Payment per Year'],correct:1,diff:'med',explain:'APY reflects your true annual return including compound interest. It\'s always higher than the base interest rate — always compare APYs.'},
+      {q:'What should you do first if you notice an unauthorized transaction?',opts:['Wait to see if it clears on its own','Ignore it if the amount is small','Report it to your bank immediately','Close your account without reporting'],correct:2,diff:'easy',explain:'Report unauthorized transactions immediately. Federal law limits your liability but requires prompt action — usually within 60 days.'},
+      {q:'What is a routing number used for?',opts:['Identifying your personal account number','Identifying the bank for electronic transactions like direct deposit','Your credit score calculation','Verifying your Social Security number'],correct:1,diff:'easy',explain:'A 9-digit routing number identifies your bank. Combined with your account number, it enables direct deposit, ACH transfers, and bill pay.'},
+      {q:'What is overdraft protection?',opts:['Insurance against bank failure','A service that covers transactions when your balance is insufficient','A minimum required account balance','A penalty fee for overspending'],correct:1,diff:'med',explain:'Overdraft protection links your checking to savings or a credit line to cover shortfalls. Without it, transactions may be declined or trigger fees.'},
+      {q:'What is a wire transfer?',opts:['A check mailed via USPS','Direct electronic transfer between banks, usually same-day','A type of recurring credit card payment','A cash ATM withdrawal'],correct:1,diff:'med',explain:'Wire transfers move funds directly between banks within hours. They\'re fast but typically cost $15–$35 per domestic transfer.'},
+      {q:'What is the benefit of automating your savings?',opts:['It earns a higher interest rate','It removes the temptation to spend before saving','It improves your credit score','It eliminates all bank fees'],correct:1,diff:'easy',explain:'Automatic savings removes decision fatigue and ensures you "pay yourself first" before discretionary spending can happen.'},
+      {q:'What is an ACH transfer?',opts:['Automated Clearing House — electronic bank-to-bank transfer','A wire transfer fee','A credit card processing charge','An ATM cash withdrawal'],correct:0,diff:'hard',explain:'ACH transfers move money electronically between bank accounts through the Automated Clearing House network — used for direct deposit, bill pay, and Venmo.'}
+    ]
+  }
+];
+
+const BADGES = [
+  {id:'first',icon:'🏅',name:'First Steps',earned:true,desc:'Complete your first question'},
+  {id:'budget',icon:'📊',name:'Budget Boss',earned:true,desc:'Complete the Budgeting module'},
+  {id:'streak3',icon:'🔥',name:'On a Roll',earned:true,desc:'Get a 3-question streak'},
+  {id:'credit',icon:'💳',name:'Credit Wizard',earned:false,desc:'Complete Credit Scores'},
+  {id:'perfect',icon:'⭐',name:'Perfect Score',earned:false,desc:'Score 100% on any module'},
+  {id:'investor',icon:'📈',name:'Investor',earned:false,desc:'Complete Investing module'},
+  {id:'homeowner',icon:'🏠',name:'Homeowner IQ',earned:false,desc:'Complete Mortgages module'},
+  {id:'taxpro',icon:'🧮',name:'Tax Pro',earned:false,desc:'Complete Taxes module'},
+  {id:'streak10',icon:'⚡',name:'Unstoppable',earned:false,desc:'Get a 10-question streak'},
+  {id:'allmod',icon:'🏆',name:'Fiscally Fit',earned:false,desc:'Complete all 6 modules'},
+];
+
+const GLOSSARY = [
+  {term:'401(k)',def:'An employer-sponsored retirement savings plan that lets employees contribute pre-tax income. Many employers match contributions up to a certain percentage.',tag:'Investing'},
+  {term:'APR',def:'Annual Percentage Rate — the yearly cost of a loan including interest and fees. Use APR (not just interest rate) to compare loan offers.',tag:'Credit'},
+  {term:'APY',def:'Annual Percentage Yield — the real return on a savings account including compound interest. Higher APY = more money earned.',tag:'Banking'},
+  {term:'Amortization',def:'The process of paying off a loan over time through regular payments. Early payments are mostly interest; later payments reduce principal.',tag:'Mortgages'},
+  {term:'Asset',def:'Anything you own with economic value: cash, stocks, real estate, or personal property that can be converted to cash.',tag:'Investing'},
+  {term:'Budget',def:'A plan that allocates income toward expenses, savings, and debt. A budget helps you control spending and reach financial goals.',tag:'Budgeting'},
+  {term:'Compound Interest',def:'Interest calculated on both the principal and previously earned interest. This creates exponential growth over time — the foundation of long-term investing.',tag:'Investing'},
+  {term:'Credit Score',def:'A number (300–850) representing your creditworthiness based on payment history, utilization, age of accounts, credit mix, and new inquiries.',tag:'Credit'},
+  {term:'Credit Utilization',def:'The ratio of your current credit card balances to your total credit limits. Keeping it under 30% helps maintain a good credit score.',tag:'Credit'},
+  {term:'Deductible',def:'The amount you pay out-of-pocket before insurance coverage kicks in. Higher deductibles typically mean lower monthly premiums.',tag:'Insurance'},
+  {term:'Diversification',def:'Spreading investments across different asset types, sectors, and geographies to reduce risk. "Don\'t put all your eggs in one basket."',tag:'Investing'},
+  {term:'Down Payment',def:'The upfront cash payment when buying a home or car. A larger down payment reduces your loan amount, monthly payment, and total interest paid.',tag:'Mortgages'},
+  {term:'Equity',def:'The value you own in an asset. For a home: market value minus remaining mortgage balance. Equity builds as you pay down debt or the asset appreciates.',tag:'Mortgages'},
+  {term:'ETF',def:'Exchange-Traded Fund — a basket of securities (stocks, bonds) that trades on exchanges like a stock. Combines diversification with stock-like flexibility.',tag:'Investing'},
+  {term:'Emergency Fund',def:'Savings covering 3–6 months of essential living expenses. It protects you from going into debt when unexpected costs arise.',tag:'Budgeting'},
+  {term:'FDIC',def:'Federal Deposit Insurance Corporation — insures bank deposits up to $250,000 per depositor per bank. Your savings are protected if a bank fails.',tag:'Banking'},
+  {term:'FICA',def:'Federal Insurance Contributions Act — payroll taxes funding Social Security and Medicare. Both employees and employers pay FICA.',tag:'Taxes'},
+  {term:'Fixed-Rate Mortgage',def:'A mortgage where the interest rate never changes for the entire loan term. Provides predictable payments and protection from rising rates.',tag:'Mortgages'},
+  {term:'Hard Inquiry',def:'A credit check triggered when you apply for credit. Can lower your score by a few points and stays on your report for 2 years.',tag:'Credit'},
+  {term:'Index Fund',def:'A fund that passively tracks a market index like the S&P 500. Known for low fees, broad diversification, and strong long-term performance.',tag:'Investing'},
+  {term:'Inflation',def:'The general rise in prices over time, reducing purchasing power. A $100 item today costs more in 10 years. Investments should outpace inflation.',tag:'Investing'},
+  {term:'Interest Rate',def:'The percentage charged on a loan or paid on savings. For loans, lower is better. For savings accounts, higher is better.',tag:'Banking'},
+  {term:'Liability',def:'Money you owe: mortgages, car loans, credit card balances, student loans. Net worth = assets minus liabilities.',tag:'Budgeting'},
+  {term:'Liquidity',def:'How quickly an asset can be converted to cash without losing value. Cash is the most liquid; real estate is much less liquid.',tag:'Investing'},
+  {term:'Net Worth',def:'Total assets minus total liabilities. The most comprehensive single measure of your financial health.',tag:'Budgeting'},
+  {term:'PMI',def:'Private Mortgage Insurance — required when your down payment is less than 20%. It protects the lender, not you, and adds to your monthly payment.',tag:'Mortgages'},
+  {term:'Roth IRA',def:'A retirement account funded with after-tax money. All growth and qualified withdrawals in retirement are completely tax-free.',tag:'Investing'},
+  {term:'S&P 500',def:'An index tracking the 500 largest US publicly traded companies. Widely considered the best single measure of overall US stock market performance.',tag:'Investing'},
+  {term:'Stock',def:'A share representing fractional ownership in a company. Stockholders can profit through price appreciation and dividends.',tag:'Investing'},
+  {term:'W-2',def:'A tax form your employer sends showing your annual wages and how much was withheld for taxes. Required to file your federal tax return.',tag:'Taxes'},
+  {term:'Zero-Based Budgeting',def:'A budgeting method where every dollar is assigned a purpose so income minus all allocations equals zero. Maximizes intentional spending.',tag:'Budgeting'},
+  {term:'Dollar-Cost Averaging',def:'Investing a fixed dollar amount at regular intervals regardless of market price. Reduces the impact of volatility and removes emotional decision-making.',tag:'Investing'},
+];
+
+// ═══════════ STATE ═══════════
+let xp=350, totalAnswered=12, streak=3, totalCorrect=10;
+let curModIdx=1, curQ=0, sessionCorrect=0, sessionTotal=0;
+let quizQs=[], answered=false, hintsUsed=0;
+let dailyDone=false;
+
+// ═══════════ INIT ═══════════
+function init(){
+  renderHomeModules();
+  renderAllModules();
+  renderBadges();
+  renderGlossary();
+  updateUI();
+}
+
+// ═══════════ TAB SWITCH ═══════════
+function switchTab(tab, el){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+  else{
+    const tabs={'home':0,'quiz-select':1,'tools':2,'coach':3,'glossary':4};
+    document.querySelectorAll('.nav-tab')[tabs[tab]]?.classList.add('active');
+  }
+  const map={'home':'screen-home','quiz-select':'screen-quiz-select','tools':'screen-tools','coach':'screen-coach','glossary':'screen-glossary'};
+  const target = map[tab] || 'screen-home';
+  document.getElementById(target)?.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ═══════════ MODULE RENDERING ═══════════
+function renderHomeModules(){
+  const c=document.getElementById('home-modules');
+  c.innerHTML=MODULES.map(m=>`
+    <div class="module${m.status==='locked'?' locked':''} ${m.status==='active'?'mod-active':''}" onclick="startModule(${m.id})">
+      <div class="mod-pill ${m.status==='done'?'pill-done':m.status==='active'?'pill-active':'pill-lock'}">${m.status==='done'?'Done':m.status==='locked'?'Locked':'Active'}</div>
+      <div class="mod-icon">${m.icon}</div>
+      <div class="mod-name">${m.name}</div>
+      <div class="mod-meta">${m.questions.length} questions</div>
+      <div class="mod-prog-bar"><div class="mod-prog-fill" style="width:${m.progress/m.questions.length*100}%"></div></div>
+    </div>`).join('');
+}
+function renderAllModules(){
+  const c=document.getElementById('all-modules');
+  c.innerHTML=MODULES.map(m=>`
+    <div class="module mod-active" onclick="startModule(${m.id})">
+      <div class="mod-icon">${m.icon}</div>
+      <div class="mod-name">${m.name}</div>
+      <div class="mod-meta">${m.questions.length} questions</div>
+      <div class="mod-prog-bar"><div class="mod-prog-fill" style="width:${m.progress/m.questions.length*100}%"></div></div>
+    </div>`).join('');
+}
+function renderBadges(){
+  const c=document.getElementById('home-badges');
+  c.innerHTML=BADGES.map(b=>`<div class="badge-chip${b.earned?' earned':''}" title="${b.desc}"><span class="bi">${b.icon}</span>${b.name}</div>`).join('');
+}
+function renderGlossary(){
+  const c=document.getElementById('glos-list');
+  c.innerHTML=GLOSSARY.map((g,i)=>`
+    <div class="glos-item" onclick="toggleGlos(${i})">
+      <div class="glos-term">${g.term}<span class="glos-tag">${g.tag}</span></div>
+      <div class="glos-def" id="gd-${i}">${g.def}</div>
+    </div>`).join('');
+}
+function toggleGlos(i){
+  const el=document.getElementById('gd-'+i);
+  el.classList.toggle('open');
+}
+function filterGlossary(val){
+  const q=val.toLowerCase();
+  document.querySelectorAll('.glos-item').forEach(item=>{
+    const text=item.textContent.toLowerCase();
+    item.style.display=text.includes(q)?'block':'none';
+  });
+}
+
+// ═══════════ MODULE START ═══════════
+function startModule(idx){
+  curModIdx=idx;
+  const mod=MODULES[idx];
+  quizQs=[...mod.questions].sort(()=>Math.random()-.5);
+  curQ=0; answered=false; sessionCorrect=0; sessionTotal=0; hintsUsed=0;
+  document.getElementById('q-mod-name').textContent=mod.icon+' '+mod.name;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-quiz').classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  renderQuestion();
+  window.scrollTo(0,0);
+}
+
+function startDailyChallenge(){
+  if(dailyDone){showToast('Daily challenge already completed! Come back tomorrow.');return;}
+  const allQs=MODULES.flatMap(m=>m.questions.map(q=>({...q,mod:m.name})));
+  quizQs=allQs.sort(()=>Math.random()-.5).slice(0,5);
+  curModIdx=-1; curQ=0; answered=false; sessionCorrect=0; sessionTotal=0;
+  document.getElementById('q-mod-name').textContent='⚡ Daily Challenge';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-quiz').classList.add('active');
+  renderQuestion();
+  window.scrollTo(0,0);
+}
+
+function retryModule(){startModule(curModIdx>=0?curModIdx:1);}
+
+// ═══════════ QUIZ RENDER ═══════════
+function renderQuestion(){
+  const q=quizQs[curQ];
+  const total=quizQs.length;
+  document.getElementById('q-num').textContent='Question '+(curQ+1);
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('q-prog-text').textContent=(curQ+1)+' / '+total;
+  document.getElementById('q-prog-fill').style.width=(((curQ+1)/total)*100)+'%';
+  const diffEl=document.getElementById('q-diff');
+  const diffMap={easy:['Easy','diff-easy'],med:['Medium','diff-med'],hard:['Hard','diff-hard']};
+  const [label,cls]=diffMap[q.diff]||['Easy','diff-easy'];
+  diffEl.textContent=label; diffEl.className='q-diff '+cls;
+  const grid=document.getElementById('opts-grid');
+  grid.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt'; btn.textContent=opt;
+    btn.onclick=()=>answer(i);
+    grid.appendChild(btn);
+  });
+  document.getElementById('fb-box').className='fb-box';
+  document.getElementById('next-btn').className='next-btn';
+  document.getElementById('xp-flash').className='xp-flash';
+  document.getElementById('hint-box').className='hint-box';
+  document.getElementById('hint-box').innerHTML='';
+  document.getElementById('hint-btn').style.display='flex';
+  answered=false;
+}
+
+function answer(idx){
+  if(answered)return;
+  answered=true;
+  const q=quizQs[curQ];
+  const opts=document.querySelectorAll('.opt');
+  opts.forEach(o=>o.disabled=true);
+  const isCorrect=idx===q.correct;
+  opts[idx].classList.add(isCorrect?'correct':'wrong');
+  opts[q.correct].classList.add('correct');
+  const fb=document.getElementById('fb-box');
+  document.getElementById('fb-title').textContent=isCorrect?'✓ Correct!':'✗ Not quite.';
+  document.getElementById('fb-body').textContent=q.explain;
+  fb.className='fb-box show '+(isCorrect?'good':'bad');
+  document.getElementById('next-btn').className='next-btn show';
+  document.getElementById('hint-btn').style.display='none';
+  sessionTotal++; totalAnswered++;
+  if(isCorrect){
+    sessionCorrect++; totalCorrect++;
+    const xpGain=q.diff==='hard'?100:q.diff==='med'?75:50;
+    xp+=xpGain;
+    streak++;
+    document.getElementById('xp-flash').className='xp-flash show';
+    document.getElementById('xp-flash').textContent='+'+xpGain+' XP earned!';
+    const msgs=streak>=10?'⚡ Unstoppable streak!':streak>=5?'🔥 '+(streak)+' in a row!':streak>=3?'🔥 On fire! '+streak+' streak':'Great job! Keep going';
+    showToast('+'+xpGain+' XP · '+msgs);
+  } else {
+    streak=0;
+    showToast('Study the explanation carefully!');
+  }
+  checkBadges();
+  updateUI();
+}
+
+function nextQ(){
+  curQ++;
+  if(curQ>=quizQs.length){showResults();}
+  else{renderQuestion();}
+}
+
+// ═══════════ HINT (AI) ═══════════
+async function getHint(){
+  if(answered)return;
+  document.getElementById('hint-btn').style.display='none';
+  const hintBox=document.getElementById('hint-box');
+  hintBox.className='hint-box show';
+  hintBox.innerHTML='<span class="hint-loading">Thinking of a hint...</span>';
+  xp=Math.max(0,xp-10);
+  updateUI();
+  const q=quizQs[curQ];
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:'You are a friendly financial literacy tutor for young adults. Give a short, helpful hint (2-3 sentences max) that guides the student toward the right answer WITHOUT revealing it directly. Use simple language.',
+        messages:[{role:'user',content:'Quiz question: "'+q.q+'"\nOptions: '+q.opts.join(' | ')+'\nGive a helpful hint without revealing the answer.'}]
+      })
+    });
+    const data=await res.json();
+    const hint=data.content?.find(b=>b.type==='text')?.text||'Think about what you\'ve learned in this module and consider which option makes the most practical sense.';
+    hintBox.innerHTML='💡 <strong>Hint:</strong> '+hint;
+  } catch(e){
+    hintBox.innerHTML='💡 <strong>Hint:</strong> Think carefully about each option. The correct answer is the one that aligns with established financial best practices.';
+  }
+}
+
+// ═══════════ RESULTS ═══════════
+function showResults(){
+  const acc=sessionTotal>0?Math.round((sessionCorrect/sessionTotal)*100):0;
+  const xpEarned=sessionCorrect*(curModIdx>=0?75:150);
+  document.getElementById('res-score').textContent=sessionCorrect+'/'+sessionTotal;
+  document.getElementById('rs-xp').textContent='+'+xpEarned;
+  document.getElementById('rs-acc').textContent=acc+'%';
+  const icon=acc>=90?'🎉':acc>=70?'💪':'📚';
+  const titles={90:'<em>Excellent</em> work!',70:'Good <em>effort!</em>',0:'Keep <em>practicing!</em>'};
+  const titleKey=acc>=90?90:acc>=70?70:0;
+  document.getElementById('res-title').innerHTML=titles[titleKey];
+  document.getElementById('res-sub').textContent=acc>=90?'You really know your stuff. Move on to the next module!':acc>=70?'Solid work! A quick review and you\'ll master this.':'Financial literacy takes practice. Review the explanations and retry!';
+  const badge=document.getElementById('res-badge');
+  if(acc===100){badge.style.display='inline-block';badge.textContent='⭐ Perfect Score Badge Earned!';unlockBadge('perfect');}
+  else if(acc>=80){badge.style.display='inline-block';badge.textContent='🌟 Module Mastery Earned!';}
+  else{badge.style.display='none';}
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-results').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ═══════════ BADGES ═══════════
+function checkBadges(){
+  if(totalAnswered>=1)unlockBadge('first');
+  if(streak>=3)unlockBadge('streak3');
+  if(streak>=10)unlockBadge('streak10');
+}
+function unlockBadge(id){
+  const badge=BADGES.find(b=>b.id===id);
+  if(!badge||badge.earned)return;
+  badge.earned=true;
+  renderBadges();
+  showBadgePopup(badge);
+}
+function showBadgePopup(b){
+  document.getElementById('bp-icon').textContent=b.icon;
+  document.getElementById('bp-title').textContent=b.name;
+  document.getElementById('bp-sub').textContent=b.desc;
+  document.getElementById('badge-popup').classList.add('show');
+  document.getElementById('badge-overlay').classList.add('show');
+}
+function closeBadge(){
+  document.getElementById('badge-popup').classList.remove('show');
+  document.getElementById('badge-overlay').classList.remove('show');
+}
+
+// ═══════════ CALCULATORS ═══════════
+function showTool(name){
+  document.querySelectorAll('.tool-panel').forEach(p=>p.style.display='none');
+  const el=document.getElementById('tool-'+name);
+  if(el){el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+const fmt=n=>'$'+Math.round(n).toLocaleString();
+const fmtK=n=>n>=1000000?'$'+(n/1000000).toFixed(1)+'M':'$'+Math.round(n/1000)+'K';
+
+function calcBudget(){
+  const inc=parseFloat(document.getElementById('b-income').value)||0;
+  const needs=inc*.5, wants=inc*.3, save=inc*.2;
+  document.getElementById('b-needs').textContent=fmt(needs);
+  document.getElementById('b-wants').textContent=fmt(wants);
+  document.getElementById('b-save').textContent=fmt(save);
+  document.getElementById('b-advice').textContent=`On $${inc.toLocaleString()}/month: ${fmt(needs)} covers rent, groceries, and utilities. ${fmt(wants)} is yours for dining, entertainment, and subscriptions. ${fmt(save)} goes straight to savings and debt payoff. Automate that last category first!`;
+  document.getElementById('b-result').className='result-box show';
+}
+
+function calcMortgage(){
+  const price=parseFloat(document.getElementById('m-price').value)||0;
+  const down=parseFloat(document.getElementById('m-down').value)||0;
+  const rate=parseFloat(document.getElementById('m-rate').value)/100/12;
+  const n=parseFloat(document.getElementById('m-term').value)*12;
+  const principal=price-down;
+  const payment=rate===0?principal/n:principal*(rate*Math.pow(1+rate,n))/(Math.pow(1+rate,n)-1);
+  const totalCost=payment*n;
+  const totalInt=totalCost-principal;
+  const downPct=Math.round((down/price)*100);
+  document.getElementById('m-monthly').textContent=fmt(payment)+'/mo';
+  document.getElementById('m-principal').textContent=fmtK(principal);
+  document.getElementById('m-total-int').textContent=fmtK(totalInt);
+  document.getElementById('m-total-cost').textContent=fmtK(totalCost);
+  document.getElementById('m-down-pct').textContent=downPct+'%';
+  const pmiNote=downPct<20?' You\'ll also pay PMI (~$100–200/mo) until you reach 20% equity.':'';
+  document.getElementById('m-advice').textContent=`You\'ll pay ${fmt(payment)}/month for ${document.getElementById('m-term').value} years. Total interest paid: ${fmtK(totalInt)} — that\'s ${Math.round(totalInt/price*100)}% of the home price.${pmiNote}`;
+  document.getElementById('m-result').className='result-box show';
+}
+
+function calcCompound(){
+  const p=parseFloat(document.getElementById('c-principal').value)||0;
+  const monthly=parseFloat(document.getElementById('c-monthly').value)||0;
+  const rate=parseFloat(document.getElementById('c-rate').value)/100/12;
+  const months=parseFloat(document.getElementById('c-years').value)*12;
+  let balance=p;
+  for(let i=0;i<months;i++){balance=balance*(1+rate)+monthly;}
+  const invested=p+monthly*months;
+  const gains=balance-invested;
+  document.getElementById('c-future').textContent=fmtK(balance);
+  document.getElementById('c-invested').textContent=fmtK(invested);
+  document.getElementById('c-gains').textContent=fmtK(gains);
+  document.getElementById('c-mult').textContent=(balance/Math.max(invested,1)).toFixed(1)+'x';
+  document.getElementById('c-advice').textContent=`Starting with ${fmt(p)} and adding ${fmt(monthly)}/month at ${document.getElementById('c-rate').value}% for ${document.getElementById('c-years').value} years grows to ${fmtK(balance)}. You invested ${fmtK(invested)} and the market contributed ${fmtK(gains)} — that\'s the power of compound growth.`;
+  document.getElementById('c-result').className='result-box show';
+}
+
+function calcCredit(){
+  const bal=parseFloat(document.getElementById('cu-bal').value)||0;
+  const lim=parseFloat(document.getElementById('cu-lim').value)||1;
+  const pct=Math.round((bal/lim)*100);
+  document.getElementById('cu-pct').textContent=pct+'%';
+  const advice=pct<=10?'Excellent! Under 10% utilization is ideal for maximum score impact.':pct<=30?'Good. Under 30% is the recommended threshold. You\'re in solid shape.':pct<=50?'Moderate. Try to pay down balances to get below 30% for a score boost.':'High utilization is hurting your score. Prioritize paying down this balance — it\'s the fastest way to improve your credit score.';
+  document.getElementById('cu-advice').textContent=advice;
+  document.getElementById('cu-result').className='result-box show';
+}
+
+function calcEmergency(){
+  const monthly=(parseFloat(document.getElementById('ef-rent').value)||0)+(parseFloat(document.getElementById('ef-food').value)||0)+(parseFloat(document.getElementById('ef-util').value)||0)+(parseFloat(document.getElementById('ef-trans').value)||0);
+  document.getElementById('ef-3mo').textContent=fmt(monthly*3);
+  document.getElementById('ef-6mo').textContent=fmt(monthly*6);
+  document.getElementById('ef-advice').textContent=`Your essential monthly expenses total ${fmt(monthly)}. Build toward ${fmt(monthly*3)} first (3 months), then aim for ${fmt(monthly*6)} (6 months) for full security. Keep this in a high-yield savings account for easy access.`;
+  document.getElementById('ef-result').className='result-box show';
+}
+
+function calcDebt(){
+  const debt=parseFloat(document.getElementById('d-total').value)||0;
+  const payment=parseFloat(document.getElementById('d-payment').value)||0;
+  const rate=parseFloat(document.getElementById('d-rate').value)/100/12;
+  let balance=debt, months=0, totalPaid=0;
+  while(balance>0 && months<600){
+    const interest=balance*rate;
+    if(payment<=interest){months=600;break;}
+    balance=balance+interest-payment;
+    totalPaid+=payment;
+    months++;
+    if(balance<0){totalPaid+=balance;balance=0;}
+  }
+  const intPaid=totalPaid-debt;
+  document.getElementById('d-months').textContent=months>=600?'Never':months+' mo';
+  document.getElementById('d-int-paid').textContent=months>=600?'∞':fmt(intPaid);
+  document.getElementById('d-total-paid').textContent=months>=600?'∞':fmt(totalPaid);
+  const advice=months>=600?'Your payment doesn\'t cover monthly interest — increase your payment immediately!':months<=24?`Great news! You\'ll be debt-free in ${months} months. ${fmt(intPaid)} in interest total.`:`${months} months to payoff. You\'ll pay ${fmt(intPaid)} in interest. Paying just ${fmt(payment*1.25)}/month instead could save months and hundreds in interest.`;
+  document.getElementById('d-advice').textContent=advice;
+  document.getElementById('d-result').className='result-box show';
+}
+
+// ═══════════ AI COACH ═══════════
+async function sendCoach(){
+  const inp=document.getElementById('coach-inp');
+  const msg=inp.value.trim();
+  if(!msg)return;
+  askCoach(msg);
+  inp.value='';
+}
+async function askCoach(msg){
+  const msgs=document.getElementById('coach-msgs');
+  const sendBtn=document.getElementById('coach-send-btn');
+  sendBtn.disabled=true;
+  const userDiv=document.createElement('div');
+  userDiv.className='msg user fade-in';
+  userDiv.innerHTML='<div class="msg-name">You</div><div class="msg-bubble">'+msg+'</div>';
+  msgs.appendChild(userDiv);
+  const thinkDiv=document.createElement('div');
+  thinkDiv.className='msg coach fade-in';
+  thinkDiv.innerHTML='<div class="msg-name">Coach</div><div class="msg-bubble"><em>Thinking...</em></div>';
+  msgs.appendChild(thinkDiv);
+  msgs.scrollTop=msgs.scrollHeight;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:'You are a friendly, knowledgeable financial literacy coach for young adults (18–28). You explain financial concepts in plain English with no jargon. Keep answers under 150 words. Use specific numbers and examples when helpful. Be encouraging and practical. Never give specific investment advice for individual stocks.',
+        messages:[{role:'user',content:msg}]
+      })
+    });
+    const data=await res.json();
+    const reply=data.content?.find(b=>b.type==='text')?.text||'Great question! I\'m having trouble connecting right now. Try asking again in a moment.';
+    thinkDiv.querySelector('.msg-bubble').innerHTML=reply.replace(/\n/g,'<br>');
+  }catch(e){
+    thinkDiv.querySelector('.msg-bubble').textContent='I\'m having trouble connecting right now. Make sure you\'re online and try again!';
+  }
+  sendBtn.disabled=false;
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+// ═══════════ UI UPDATES ═══════════
+function updateUI(){
+  const pct=Math.min(100,Math.round((xp%1000)/10));
+  document.getElementById('xp-bar').style.width=pct+'%';
+  document.getElementById('xp-display').textContent=(xp%1000)+' / 1000';
+  document.getElementById('nav-xp').textContent=xp;
+  document.getElementById('lb-xp').textContent=xp+' xp';
+  document.getElementById('s-streak').textContent=streak+(streak>=3?'🔥':'');
+  document.getElementById('s-total').textContent=totalAnswered;
+  const acc=totalAnswered>0?Math.round((totalCorrect/totalAnswered)*100):0;
+  document.getElementById('s-acc').textContent=acc+'%';
+  const lvls=[{min:0,name:'Rookie'},{min:200,name:'Saver'},{min:500,name:'Budgeter'},{min:1000,name:'Investor'},{min:2000,name:'Wealth Builder'},{min:4000,name:'Finance Pro'}];
+  const lvl=lvls.filter(l=>xp>=l.min).pop();
+  const lvlNum=lvls.indexOf(lvl)+1;
+  document.getElementById('lvl-label').textContent='Level '+lvlNum+' · '+lvl.name;
+}
+
+// ═══════════ TOAST ═══════════
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+init();
+</script>
+</body>
+</html>
