@@ -975,7 +975,7 @@ async function getHint(){
 function showResults(){
   const acc=sessionTotal>0?Math.round((sessionCorrect/sessionTotal)*100):0;
   const xpEarned=sessionCorrect*(curModIdx>=0?75:150);
-  document.getElementById('res-score').textContent=sessionCorrect+'/'+sessionTotal;
+  document.getElementById('rs-score').textContent=sessionCorrect+'/'+sessionTotal;
   document.getElementById('rs-xp').textContent='+'+xpEarned;
   document.getElementById('rs-acc').textContent=acc+'%';
   const icon=acc>=90?'🎉':acc>=70?'💪':'📚';
